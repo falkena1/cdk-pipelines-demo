@@ -5,8 +5,8 @@ from aws_cdk import pipelines
 
 from .webservice_stage import WebServiceStage
 
-APP_ACCOUNT = '170332382575'
-
+APP_ACCOUNT_DEV= '423749550142'
+APP_ACCOUNT_PROD = '170332382575'
 class PipelineStack(core.Stack):
   def __init__(self, scope: core.Construct, id: str, **kwargs):
     super().__init__(scope, id, **kwargs)
@@ -34,7 +34,7 @@ class PipelineStack(core.Stack):
         synth_command='cdk synth'))
 
     pre_prod_app = WebServiceStage(self, 'Pre-Prod', env={
-      'account': APP_ACCOUNT,
+      'account': APP_ACCOUNT_DEV,
       'region': 'eu-central-1',
     })
     pre_prod_stage = pipeline.add_application_stage(pre_prod_app)
@@ -51,7 +51,7 @@ class PipelineStack(core.Stack):
       }))
 
     pipeline.add_application_stage(WebServiceStage(self, 'Prod', env={
-      'account': APP_ACCOUNT,
+      'account': APP_ACCOUNT_PROD,
       'region': 'eu-central-1',
     }))
 
