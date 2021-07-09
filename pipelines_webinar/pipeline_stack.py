@@ -1,4 +1,5 @@
 from aws_cdk import core
+from aws_cdk.core import DefaultStackSynthesizer
 from aws_cdk import aws_codepipeline as codepipeline
 from aws_cdk import aws_codepipeline_actions as cpactions
 from aws_cdk import pipelines
@@ -7,6 +8,7 @@ from .webservice_stage import WebServiceStage
 
 APP_ACCOUNT_DEV= '423749550142'
 APP_ACCOUNT_PROD = '170332382575'
+
 class PipelineStack(core.Stack):
   def __init__(self, scope: core.Construct, id: str, **kwargs):
     super().__init__(scope, id, **kwargs)
@@ -33,10 +35,12 @@ class PipelineStack(core.Stack):
         build_command='pytest unittests',
         synth_command='cdk synth'))
 
-    pre_prod_app = WebServiceStage(self, 'Pre-Prod', env={
-      'account': APP_ACCOUNT_DEV,
-      'region': 'eu-central-1',
-    })
+    pre_prod_app = WebServiceStage(self, 'Pre-Prod',    
+      env={
+        'account': APP_ACCOUNT_DEV,
+        'region': 'eu-central-1',
+      }
+    )
     pre_prod_stage = pipeline.add_application_stage(pre_prod_app)
     pre_prod_stage.add_actions(pipelines.ShellScriptAction(
       action_name='Integ',
